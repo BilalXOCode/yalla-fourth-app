@@ -120,7 +120,7 @@ export default function Home() {
           <div className="hero__scrim" />
         </div>
 
-        <div className="container hero__content">
+        <div className="hero__content">
           <span className="eyebrow">{t('home.hero.eyebrow')}</span>
           <HeroTitle lead={t('home.hero.titleLead')} highlight={t('home.hero.titleHighlight')} />
           <p className="hero__sub">{t('home.hero.sub')}</p>
