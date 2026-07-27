@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "install:server": "npm install --prefix server",
-    "install:client": "npm install --prefix client",
+    "install:client": "npm install --prefix client --include=dev",
     "install:all": "npm run install:server && npm run install:client",
-    "build": "npm run install:all && npm run build --prefix client",
+    "build": "npm run install:server && npm run install:client && npm run build --prefix client",
     "start": "node server/index.js",
     "seed": "npm run seed --prefix server",
     "dev:server": "node server/index.js",
