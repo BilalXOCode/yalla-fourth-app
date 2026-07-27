@@ -1,0 +1,19 @@
+{
+  "name": "yalla-fourth-app",
+  "version": "1.0.0",
+  "description": "Yalla Fourth - padel matchmaking for the UAE (MERN)",
+  "private": true,
+  "scripts": {
+    "install:server": "npm install --prefix server",
+    "install:client": "npm install --prefix client",
+    "install:all": "npm run install:server && npm run install:client",
+    "build": "npm run install:all && npm run build --prefix client",
+    "start": "node server/index.js",
+    "seed": "npm run seed --prefix server",
+    "dev:server": "node server/index.js",
+    "dev:client": "npm run dev --prefix client"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

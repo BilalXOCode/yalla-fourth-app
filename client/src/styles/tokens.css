@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Yalla Fourth — design tokens
+   Single source of truth for colour, type, spacing, glow and motion.
+   Values are taken from the approved screenshots.
+   ========================================================================== */
+
+:root {
+  /* --- Backgrounds & surfaces (near-black navy) --- */
+  --bg: #0a0e14;
+  --bg-elev: #0c111a;
+  --surface: #11161f;
+  --surface-2: #151b26;
+  --surface-3: #1a2130;
+
+  /* --- Borders (thin, low-contrast) --- */
+  --border: #232b38;
+  --border-soft: #1a212c;
+
+  /* --- Brand accent (padel lime) --- */
+  --lime: #c6f135;
+  --lime-strong: #d4fb4a;
+  --lime-dim: #a9d321;
+  --on-lime: #0a0e14; /* dark text sitting on a lime button */
+
+  /* --- Text --- */
+  --text: #f4f7fb;
+  --text-dim: #8b95a5;
+  --text-faint: #5c6675;
+  --white: #ffffff;
+
+  /* --- Skill-level colours --- */
+  --skill-beginner: #34d399;
+  --skill-improver: #60a5fa;
+  --skill-intermediate: #f5a623;
+  --skill-advanced: #c6f135;
+
+  /* --- Status colours --- */
+  --ok: #34d399;
+  --warn: #f5a623;
+  --error: #ff5d5d;
+  --checking: #f5c542;
+
+  /* --- Type families --- */
+  --font-display: 'Kanit', system-ui, -apple-system, sans-serif;
+  --font-body: 'Kanit', system-ui, -apple-system, sans-serif;
+  --font-ar: 'Cairo', system-ui, -apple-system, sans-serif;
+
+  /* --- Radius --- */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* --- Glow (controlled lime bloom) --- */
+  --glow: 0 0 22px rgba(198, 241, 53, 0.35);
+  --glow-soft: 0 0 14px rgba(198, 241, 53, 0.2);
+  --glow-strong: 0 0 30px rgba(198, 241, 53, 0.5);
+
+  /* --- Layout --- */
+  --nav-h: 72px;
+  --container: 1200px;
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --speed-fast: 0.16s;
+  --speed: 0.28s;
+
+  /* --- Text-size control (A- A A+). JS overrides --text-scale. --- */
+  --text-scale: 1;
+}
+
+/* Arabic: swap to Cairo, drop Latin letter-spacing, looser lines, larger. */
+:root[dir='rtl'] {
+  --font-display: 'Cairo', system-ui, sans-serif;
+  --font-body: 'Cairo', system-ui, sans-serif;
+}

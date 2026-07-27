@@ -1,0 +1,30 @@
+.placeholder {
+  min-height: calc(100vh - var(--nav-h) - 260px);
+  display: flex;
+  align-items: center;
+}
+
+.placeholder__inner {
+  padding-block: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.placeholder__title {
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  color: var(--white);
+}
+
+.placeholder__note {
+  font-size: 1.05rem;
+  max-width: 460px;
+}
+
+.placeholder__demo {
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}

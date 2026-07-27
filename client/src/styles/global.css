@@ -1,0 +1,203 @@
+/* ==========================================================================
+   Yalla Fourth — global base styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* The A- A A+ control scales this. Everything else uses rem so it all
+     grows/shrinks together. */
+  font-size: calc(100% * var(--text-scale));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+/* Arabic reads with no Latin letter-spacing and a looser line height. */
+:root[dir='rtl'] body {
+  letter-spacing: normal;
+  line-height: 1.9;
+  font-size: 1.05rem;
+}
+
+/* --- Headings: heavy italic condensed sports look --- */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  margin: 0;
+  color: var(--white);
+}
+
+/* Arabic headings are never italic and sit a little larger/looser. */
+:root[dir='rtl'] h1,
+:root[dir='rtl'] h2,
+:root[dir='rtl'] h3,
+:root[dir='rtl'] h4 {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: none;
+  line-height: 1.4;
+}
+
+p {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --- Layout helpers --- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--lime);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--lime);
+}
+:root[dir='rtl'] .eyebrow {
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+/* --- Buttons: fast premium hover (lift + lime glow) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.72em 1.5em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.9rem;
+  transition: transform var(--speed-fast) var(--ease),
+    box-shadow var(--speed-fast) var(--ease),
+    background var(--speed-fast) var(--ease), color var(--speed-fast) var(--ease);
+}
+:root[dir='rtl'] .btn {
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+.btn-primary {
+  background: var(--lime);
+  color: var(--on-lime);
+  border-color: var(--lime);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+  background: var(--lime-strong);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  transform: translateY(-2px);
+  border-color: var(--lime);
+  box-shadow: var(--glow-soft);
+}
+
+/* --- Focus visibility (accessibility) --- */
+:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+/* --- Scroll-reveal utility (used from Stage 2 on) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--speed) var(--ease), transform var(--speed) var(--ease);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Respect reduced-motion: kill all movement & glow transitions --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover,
+  .btn-primary:hover,
+  .btn-ghost:hover {
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
