@@ -10,14 +10,16 @@ const router = express.Router();
 // status, q (search), limit. Returns match cards shaped by the PadelMatch class.
 router.get('/', async (req, res) => {
   try {
-    const { area, venue, skill, group, age, status, q, limit } = req.query;
+    const { area, venue, skill, group, age, status, date, time, minOpen, q, limit } = req.query;
 
+    // Fields stored on the document are filtered directly in MongoDB.
     const query = {};
     if (area) query.area = area;
     if (venue) query.venue = venue;
     if (skill) query.skillLevel = skill;
     if (group) query.groupType = group;
     if (age) query.ageGroup = age;
+    if (date) query.date = date;
     if (q) {
       query.$or = [
         { title: { $regex: q, $options: 'i' } },
@@ -31,8 +33,22 @@ router.get('/', async (req, res) => {
 
     let cards = PadelMatch.toCards(docs);
 
-    // status is derived, so filter it after shaping.
+    // Derived / bucketed fields are filtered after shaping.
     if (status) cards = cards.filter((c) => c.status === status);
+
+    // Time of day bucket: morning (<12:00), afternoon (12:00-16:59), evening (>=17:00).
+    if (time === 'morning' || time === 'afternoon' || time === 'evening') {
+      cards = cards.filter((c) => {
+        const hour = Number.parseInt(String(c.time).slice(0, 2), 10);
+        if (time === 'morning') return hour < 12;
+        if (time === 'afternoon') return hour >= 12 && hour < 17;
+        return hour >= 17;
+      });
+    }
+
+    // Minimum open spots.
+    const min = Number.parseInt(minOpen, 10);
+    if (!Number.isNaN(min) && min > 0) cards = cards.filter((c) => c.spotsLeft >= min);
 
     const max = Number.parseInt(limit, 10);
     if (!Number.isNaN(max) && max > 0) cards = cards.slice(0, max);

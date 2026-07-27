@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import Home from './pages/Home.jsx';
+import FindMatches from './pages/FindMatches.jsx';
 import Placeholder from './pages/Placeholder.jsx';
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Placeholder titleKey="account" />} />
-        <Route path="/find" element={<Placeholder titleKey="find" />} />
+        <Route path="/find" element={<FindMatches />} />
         <Route path="/create" element={<Placeholder titleKey="create" />} />
         <Route path="/support" element={<Placeholder titleKey="support" />} />
         <Route path="/about" element={<Placeholder titleKey="about" />} />

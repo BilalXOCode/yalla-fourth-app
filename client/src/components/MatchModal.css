@@ -1,0 +1,147 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(4, 6, 10, 0.72);
+  backdrop-filter: blur(4px);
+  animation: modalfade var(--speed) var(--ease);
+}
+@keyframes modalfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 34px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal__close {
+  position: absolute;
+  inset-inline-end: 16px;
+  top: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  font-size: 1.3rem;
+  line-height: 1;
+  transition: color var(--speed-fast) var(--ease), border-color var(--speed-fast) var(--ease);
+}
+.modal__close:hover {
+  color: var(--white);
+  border-color: var(--lime);
+}
+
+.modal__msg {
+  padding: 30px 0;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.modal__body {
+  border-inline-start: 3px solid var(--skill-color, var(--lime));
+  padding-inline-start: 18px;
+}
+
+.modal__venue {
+  font-size: 1.8rem;
+  color: var(--white);
+  margin-top: 12px;
+  text-transform: uppercase;
+}
+:root[dir='rtl'] .modal__venue {
+  text-transform: none;
+}
+.modal__loc {
+  margin-top: 8px;
+  color: var(--text-dim);
+}
+
+.modal__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.modal__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-soft);
+}
+.modal__grid dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+:root[dir='rtl'] .modal__grid dt,
+:root[dir='rtl'] .modal__notes dt {
+  letter-spacing: normal;
+}
+.modal__grid dd {
+  margin: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+.modal__host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal__notes {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
+}
+.modal__notes dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.modal__notes p {
+  color: var(--text-dim);
+}
+
+.modal__actions {
+  margin-top: 26px;
+}
+.modal__actions .btn {
+  width: 100%;
+}
+.modal__loginnote {
+  text-align: center;
+  padding: 14px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+}
+.modal__loginlink {
+  color: var(--lime);
+  font-weight: 700;
+}
+.modal__loginlink:hover {
+  text-decoration: underline;
+}

@@ -255,12 +255,6 @@
   box-shadow: 0 0 8px var(--skill-color, var(--lime));
 }
 
-/* skill colour mapping (shared by badges, pills, cards) */
-[data-skill='beginner'] { --skill-color: var(--skill-beginner); }
-[data-skill='improver'] { --skill-color: var(--skill-improver); }
-[data-skill='intermediate'] { --skill-color: var(--skill-intermediate); }
-[data-skill='advanced'] { --skill-color: var(--skill-advanced); }
-
 .levelbadge[data-skill] {
   border-color: color-mix(in srgb, var(--skill-color) 45%, var(--border));
   background: color-mix(in srgb, var(--skill-color) 12%, var(--bg-elev));
@@ -303,118 +297,6 @@
   background: var(--surface);
   border: 1px dashed var(--border);
   border-radius: var(--radius-lg);
-}
-
-/* Match card */
-.mcard {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-inline-start: 3px solid var(--skill-color, var(--lime));
-  border-radius: var(--radius-lg);
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-}
-.mcard__toprow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.mcard__time {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  padding: 5px 12px;
-}
-.mcard__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--skill-color, var(--lime));
-}
-.pill {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  color: var(--skill-color, var(--lime));
-  background: color-mix(in srgb, var(--skill-color) 16%, transparent);
-  border: 1px solid color-mix(in srgb, var(--skill-color) 40%, transparent);
-}
-.mcard__venue {
-  font-size: 1.2rem;
-  color: var(--white);
-  text-transform: uppercase;
-}
-:root[dir='rtl'] .mcard__venue {
-  text-transform: none;
-}
-.mcard__loc {
-  margin-top: 6px;
-  font-size: 0.9rem;
-  color: var(--text-dim);
-}
-.mcard__hostrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-soft);
-}
-.mcard__avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--lime);
-  background: rgba(198, 241, 53, 0.12);
-  border: 1px solid rgba(198, 241, 53, 0.3);
-}
-.mcard__hostname {
-  font-size: 0.9rem;
-  color: var(--text);
-}
-.mcard__hostlabel {
-  color: var(--text-faint);
-}
-.mcard__left {
-  margin-inline-start: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  white-space: nowrap;
-}
-.mcard__courtdots {
-  display: inline-flex;
-  gap: 3px;
-}
-.cdot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1px solid var(--lime);
-}
-.cdot.is-filled {
-  background: var(--lime);
-}
-.mcard__join {
-  margin-top: 18px;
-  width: 100%;
 }
 
 /* ---------- Bilingual note band ---------- */

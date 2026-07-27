@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLang } from '../context/LangContext.jsx';
 import Reveal from '../components/Reveal.jsx';
+import MatchCard from '../components/MatchCard.jsx';
 import useReducedMotion from '../lib/useReducedMotion.js';
 import { api } from '../lib/api.js';
-import { dayLabel } from '../lib/formatDate.js';
 import './Home.css';
 
 // --- Small inline icons for the "how it works" cards ----------------------
@@ -36,7 +36,8 @@ function IconPlus() {
 }
 const STEP_ICONS = [<IconLevel />, <IconSearch />, <IconPlus />];
 
-// Hero heading revealed word by word.
+// Hero heading revealed word by word (see below). Match cards use the shared
+// MatchCard component in its "compact" variant.
 function HeroTitle({ lead, highlight }) {
   const reduced = useReducedMotion();
   const [isIn, setIsIn] = useState(reduced);
@@ -68,47 +69,6 @@ function HeroTitle({ lead, highlight }) {
         {highlight.split(' ').map((w) => word(w, 'hero-word--hl'))}
       </span>
     </h1>
-  );
-}
-
-// A single open-match preview card (data comes from the database).
-function MatchCard({ m }) {
-  const { t, lang } = useLang();
-  const cap = m.capacity || 4;
-  const dots = Array.from({ length: cap }, (_, idx) => idx < cap - m.spotsLeft);
-  return (
-    <article className="mcard" data-skill={m.skill}>
-      <div className="mcard__toprow">
-        <span className="mcard__time">
-          <span className="mcard__dot" /> {dayLabel(m.date, lang, t)} · {m.time}
-        </span>
-        <span className="pill" data-skill={m.skill}>
-          {t(`home.skill.levels.${m.skill}`)}
-        </span>
-      </div>
-
-      <h3 className="mcard__venue">{m.venue}</h3>
-      <p className="mcard__loc">{m.location}</p>
-
-      <div className="mcard__hostrow">
-        <span className="mcard__avatar">{m.hostInitials}</span>
-        <span className="mcard__hostname">
-          <span className="mcard__hostlabel">{t('home.open.host')}</span> {m.hostName}
-        </span>
-        <span className="mcard__left">
-          <span className="mcard__courtdots">
-            {dots.map((filled, idx) => (
-              <span key={idx} className={`cdot ${filled ? 'is-filled' : ''}`} />
-            ))}
-          </span>
-          {m.spotsLeft} {t('home.open.left')}
-        </span>
-      </div>
-
-      <NavLink to="/find" className="btn btn-primary mcard__join">
-        {t('home.open.join')}
-      </NavLink>
-    </article>
   );
 }
 
@@ -239,7 +199,7 @@ export default function Home() {
           <div className="open__grid">
             {openMatches.map((m, idx) => (
               <Reveal key={m.id} delay={idx * 90}>
-                <MatchCard m={m} />
+                <MatchCard m={m} variant="compact" />
               </Reveal>
             ))}
           </div>

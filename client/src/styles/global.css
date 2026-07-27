@@ -170,6 +170,12 @@ ul {
   outline-offset: 2px;
 }
 
+/* --- Skill-level colour mapping (shared by badges, pills and cards) --- */
+[data-skill='beginner'] { --skill-color: var(--skill-beginner); }
+[data-skill='improver'] { --skill-color: var(--skill-improver); }
+[data-skill='intermediate'] { --skill-color: var(--skill-intermediate); }
+[data-skill='advanced'] { --skill-color: var(--skill-advanced); }
+
 /* --- Scroll-reveal utility (used from Stage 2 on) --- */
 .reveal {
   opacity: 0;

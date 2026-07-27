@@ -1,0 +1,283 @@
+/* ==========================================================================
+   Find Matches page
+   ========================================================================== */
+
+.find {
+  padding-top: 60px;
+}
+
+.find__head {
+  max-width: 640px;
+}
+.find__title {
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  color: var(--white);
+  margin-top: 14px;
+}
+.find__sub {
+  margin-top: 14px;
+  font-size: 1.05rem;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 30px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+.tab {
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.86rem;
+  padding: 9px 22px;
+  border-radius: var(--radius-pill);
+  transition: background var(--speed-fast) var(--ease), color var(--speed-fast) var(--ease);
+}
+:root[dir='rtl'] .tab {
+  font-style: normal;
+  letter-spacing: normal;
+}
+.tab.is-active {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+.tab:not(.is-active):hover {
+  color: var(--text);
+}
+
+/* ---------- Count row + mobile filters toggle ---------- */
+.find__countrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 32px;
+}
+.find__count {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.find__count strong {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--white);
+}
+:root[dir='rtl'] .find__count strong {
+  font-style: normal;
+}
+.find__countmuted {
+  color: var(--text-faint);
+  font-size: 0.95rem;
+}
+.find__filterstoggle {
+  display: none;
+  font-size: 0.8rem;
+  padding: 0.55em 1.1em;
+}
+
+/* ---------- Filter panel ---------- */
+.filterpanel {
+  margin-top: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.filterpanel__mobilehead {
+  display: none;
+}
+.filterpanel__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.filter__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+:root[dir='rtl'] .filter__label {
+  letter-spacing: normal;
+}
+.filter__input {
+  width: 100%;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  transition: border-color var(--speed-fast) var(--ease), box-shadow var(--speed-fast) var(--ease);
+}
+.filter__input:focus {
+  outline: none;
+  border-color: var(--lime);
+  box-shadow: var(--glow-soft);
+}
+/* Make the native date/time picker icon visible on the dark theme. */
+.filter__input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
+
+.filterpanel__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 18px;
+}
+.filterpanel__reset {
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color var(--speed-fast) var(--ease);
+}
+.filterpanel__reset:hover {
+  color: var(--lime);
+}
+/* The "apply" button is only used to close the drawer on mobile. */
+.filterpanel__apply {
+  display: none;
+}
+
+/* ---------- Results grid ---------- */
+.find__grid {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.find__msg {
+  margin-top: 30px;
+  padding: 40px;
+  text-align: center;
+  color: var(--text-dim);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* ---------- My matches (needs login until Stage 5) ---------- */
+.find__mine {
+  margin-top: 30px;
+  padding: 60px 30px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.find__mine p {
+  font-size: 1.05rem;
+  max-width: 380px;
+}
+
+.find__backdrop {
+  display: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1050px) {
+  .filterpanel__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .find__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .find__filterstoggle {
+    display: inline-flex;
+  }
+  .find__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Filter panel becomes a slide-in drawer. */
+  .find__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    background: rgba(4, 6, 10, 0.6);
+  }
+  .filterpanel {
+    position: fixed;
+    z-index: 160;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: min(400px, 90vw);
+    margin: 0;
+    border-radius: 0;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform var(--speed) var(--ease);
+  }
+  :root[dir='rtl'] .filterpanel {
+    transform: translateX(-100%);
+  }
+  .filterpanel.is-open {
+    transform: translateX(0);
+  }
+  .filterpanel__mobilehead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  :root[dir='rtl'] .filterpanel__mobilehead {
+    font-style: normal;
+  }
+  .filterpanel__closebtn {
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--text-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .filterpanel__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .filterpanel__apply {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 440px) {
+  .filterpanel__grid {
+    grid-template-columns: 1fr;
+  }
+}
