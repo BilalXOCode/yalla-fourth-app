@@ -9,6 +9,7 @@ import FindMatches from './pages/FindMatches.jsx';
 import AccountAccess from './pages/AccountAccess.jsx';
 import CreateMatch from './pages/CreateMatch.jsx';
 import Support from './pages/Support.jsx';
+import About from './pages/About.jsx';
 import Placeholder from './pages/Placeholder.jsx';
 
 export default function App() {
@@ -21,7 +22,7 @@ export default function App() {
         <Route path="/find" element={<FindMatches />} />
         <Route path="/create" element={<CreateMatch />} />
         <Route path="/support" element={<Support />} />
-        <Route path="/about" element={<Placeholder titleKey="about" />} />
+        <Route path="/about" element={<About />} />
         {/* Unknown routes fall back to Home */}
         <Route path="*" element={<Placeholder titleKey="home" />} />
       </Routes>

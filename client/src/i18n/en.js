@@ -442,6 +442,46 @@ export default {
       ],
     },
   },
+  about: {
+    eyebrow: 'The team behind Yalla Fourth',
+    title: 'Meet the developers',
+    intro: 'A small team in the UAE building a simpler way to find a padel match and the right players to fill it.',
+    leadBadge: 'Project lead',
+    idLabel: 'ID',
+    photoAlt: 'Photo of',
+    members: [
+      {
+        name: 'Bilal Faqir Muhammad',
+        title: 'Founder and Lead Full-Stack Developer',
+        bio: 'Bilal founded and led the project from the first idea to the working product. He set the technical direction and built the core across the front end and the back end, including the Node and Express server, the MongoDB data layer, the REST API, authentication, and the live-validation logic on Create Match. He kept the team aligned, brought everyone\'s work together, and ran the testing and deployment.',
+      },
+      {
+        name: 'Mahmoud Ahmed Sayed Moubarez',
+        title: 'Front-End Developer',
+        bio: 'Mahmoud owns the front-end implementation. He turns the design into responsive pages and reusable components, and handles the interface behaviour and styling across the whole site so it holds up on every screen.',
+      },
+      {
+        name: 'Saeed Omar Alameri',
+        title: 'UI and Content Developer',
+        bio: 'Saeed worked on the interface components and the bilingual content. He helped organize and check the English and Arabic text across the pages and kept the wording and layout consistent from one screen to the next.',
+      },
+      {
+        name: 'Rashed Yousef Al Kaaba',
+        title: 'QA and Testing',
+        bio: 'Rashed tested the pages and forms across devices and both languages. He checked the validation states and the main flows end to end, and logged the issues he found so they could be fixed.',
+      },
+      {
+        name: 'Zayed Nasser AlKaabi',
+        title: 'Documentation and Data',
+        bio: 'Zayed prepared the sample match and venue data the site runs on, and organized the project documentation and the write-up materials so everything stays easy to follow.',
+      },
+    ],
+    supervisor: {
+      label: 'Project supervision',
+      name: 'Dr. Nisha Thorakkattu Madathil',
+      line: 'Supervising the Yalla Fourth build',
+    },
+  },
   placeholder: {
     eyebrow: 'Coming soon',
     note: 'This page is built in a later stage.',

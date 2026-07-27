@@ -1,0 +1,257 @@
+/* ==========================================================================
+   About Developers page (scoped: ab__* classes only)
+   ========================================================================== */
+
+.ab {
+  padding-top: 64px;
+  padding-bottom: 90px;
+}
+.ab__wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* ---- Intro ---- */
+.ab__head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ab__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--lime);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+}
+.ab__eyebrow::before,
+.ab__eyebrow::after {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--lime);
+}
+:root[dir='rtl'] .ab__eyebrow {
+  font-style: normal;
+  letter-spacing: normal;
+}
+.ab__title {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  color: var(--white);
+  margin-top: 16px;
+}
+.ab__intro {
+  margin-top: 16px;
+  max-width: 600px;
+  font-size: 1.08rem;
+}
+
+/* ---- Team grid: 3 on top, 2 centered below (flex wrap does the centering) ---- */
+.ab__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 52px;
+}
+
+.ab__card {
+  position: relative;
+  flex: 1 1 330px;
+  max-width: 372px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 26px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--speed) var(--ease), border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
+}
+.ab__card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--lime) 45%, var(--border));
+  box-shadow: var(--glow-soft);
+}
+
+/* The lead card is highlighted with a lime edge + soft bloom. */
+.ab__card.is-lead {
+  border-color: color-mix(in srgb, var(--lime) 60%, var(--border));
+  box-shadow: var(--glow-soft);
+}
+.ab__card.is-lead:hover {
+  box-shadow: var(--glow);
+}
+
+/* Project-lead badge, tucked into the top-inline-start corner. */
+.ab__badge {
+  position: absolute;
+  top: 16px;
+  inset-inline-start: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--lime) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lime) 55%, transparent);
+  color: var(--lime);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+:root[dir='rtl'] .ab__badge {
+  letter-spacing: normal;
+}
+.ab__badgestar {
+  font-size: 0.72rem;
+}
+
+/* ---- Avatar ---- */
+.ab__avatar {
+  width: 112px;
+  height: 112px;
+  margin-top: 8px;
+  margin-bottom: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 38%, var(--surface-3), var(--bg-elev));
+  border: 1px solid var(--border);
+}
+.ab__card.is-lead .ab__avatar {
+  border: 3px solid var(--lime);
+  box-shadow: var(--glow-soft);
+}
+.ab__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ab__silhouette {
+  width: 74px;
+  height: 74px;
+  color: var(--text-faint);
+}
+
+/* ---- Name / role / id ---- */
+.ab__name {
+  font-size: 1.35rem;
+  color: var(--white);
+}
+.ab__role {
+  margin-top: 8px;
+  color: var(--lime);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.ab__id {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.ab__idicon {
+  width: 15px;
+  height: 15px;
+  color: var(--text-faint);
+}
+.ab__bio {
+  margin-top: 18px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+/* ---- Supervisor: understated, clearly set apart from the team cards ---- */
+.ab__supervisor {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 40px;
+  padding: 26px 30px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+}
+.ab__supicon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--lime) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lime) 30%, transparent);
+}
+.ab__supicon svg {
+  width: 26px;
+  height: 26px;
+  color: var(--lime);
+}
+.ab__suplabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+:root[dir='rtl'] .ab__suplabel {
+  letter-spacing: normal;
+}
+.ab__supname {
+  margin-top: 8px;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+.ab__supline {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 760px) {
+  .ab__grid {
+    margin-top: 40px;
+  }
+  .ab__card {
+    flex-basis: 300px;
+  }
+}
+@media (max-width: 520px) {
+  .ab__card {
+    flex: 1 1 100%;
+    max-width: 420px;
+  }
+  .ab__supervisor {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 16px;
+  }
+}
