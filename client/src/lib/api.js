@@ -36,10 +36,13 @@ export const api = {
   getVenues: () => request('/venues'),
   me: (token) => request('/auth/me', { token }),
   myMatches: (token) => request('/matches/mine', { token }),
+  checkDuplicate: ({ venue, date, time }) =>
+    request(`/matches/check-duplicate${toQuery({ venue, date, time })}`),
 
   // Writes (POST)
   register: (body) => request('/auth/register', { method: 'POST', body }),
   login: (body) => request('/auth/login', { method: 'POST', body }),
   saveQuiz: (body, token) => request('/auth/quiz', { method: 'POST', body, token }),
   joinMatch: (id, token) => request(`/matches/${id}/join`, { method: 'POST', token }),
+  createMatch: (body, token) => request('/matches', { method: 'POST', body, token }),
 };

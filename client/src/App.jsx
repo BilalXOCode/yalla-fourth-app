@@ -7,6 +7,7 @@ import Footer from './components/Footer.jsx';
 import Home from './pages/Home.jsx';
 import FindMatches from './pages/FindMatches.jsx';
 import AccountAccess from './pages/AccountAccess.jsx';
+import CreateMatch from './pages/CreateMatch.jsx';
 import Placeholder from './pages/Placeholder.jsx';
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<AccountAccess />} />
         <Route path="/find" element={<FindMatches />} />
-        <Route path="/create" element={<Placeholder titleKey="create" />} />
+        <Route path="/create" element={<CreateMatch />} />
         <Route path="/support" element={<Placeholder titleKey="support" />} />
         <Route path="/about" element={<Placeholder titleKey="about" />} />
         {/* Unknown routes fall back to Home */}
