@@ -45,4 +45,5 @@ export const api = {
   saveQuiz: (body, token) => request('/auth/quiz', { method: 'POST', body, token }),
   joinMatch: (id, token) => request(`/matches/${id}/join`, { method: 'POST', token }),
   createMatch: (body, token) => request('/matches', { method: 'POST', body, token }),
+  submitSupport: (body) => request('/support', { method: 'POST', body }),
 };

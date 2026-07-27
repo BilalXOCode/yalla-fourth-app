@@ -34,6 +34,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', require('./routes/auth.js'));
 app.use('/api/venues', require('./routes/venues.js'));
 app.use('/api/matches', require('./routes/matches.js'));
+app.use('/api/support', require('./routes/support.js'));
 
 // --- Serve the built React app in production ------------------------------
 if (isProduction) {
