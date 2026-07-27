@@ -36,7 +36,7 @@ function CourtDots({ capacity, spotsLeft }) {
   );
 }
 
-export default function MatchCard({ m, variant = 'full', onDetails, onJoin }) {
+export default function MatchCard({ m, variant = 'full', onDetails, onJoin, joined = false }) {
   const { t, lang } = useLang();
   const isFull = m.status === 'full' || m.spotsLeft <= 0;
 
@@ -66,6 +66,39 @@ export default function MatchCard({ m, variant = 'full', onDetails, onJoin }) {
         <NavLink to="/find" className="btn btn-primary mcard__join">
           {t('home.open.join')}
         </NavLink>
+      </article>
+    );
+  }
+
+  // --- "My matches" variant (hosting / joined) ---
+  if (variant === 'mine') {
+    const spotsLine =
+      m.role === 'joined'
+        ? t('find.mine.youAreIn')
+        : `${t('find.mine.waitingPre')} ${m.spotsLeft} ${t('find.mine.waitingPost')}`;
+    return (
+      <article className="mcard mcard--full" data-skill={m.skill}>
+        <div className="mcard__head">
+          <h3 className="mcard__venue">{m.venue}</h3>
+          <span className={`rolebadge rolebadge--${m.role}`}>{t(`find.mine.${m.role}`)}</span>
+        </div>
+        <p className="mcard__loc">
+          <span className="mcard__ico"><PinIcon /></span> {m.location}
+        </p>
+        <div className="mcard__pills">
+          <span className="pill" data-skill={m.skill}>{t(`home.skill.levels.${m.skill}`)}</span>
+          <span className="pill pill--muted">{t(`find.groups.${m.groupType}`)}</span>
+        </div>
+        <div className="mcard__when">
+          <span className="mcard__ico"><CalIcon /></span> {dayLabel(m.date, lang, t)} · {m.time}
+        </div>
+        <div className="mcard__minerow">
+          <span className="mcard__mineinfo">{spotsLine}</span>
+          <CourtDots capacity={m.capacity} spotsLeft={m.spotsLeft} />
+        </div>
+        <button type="button" className="btn btn-ghost mcard__viewbtn" onClick={() => onDetails?.(m)}>
+          {t('find.mine.viewDetails')}
+        </button>
       </article>
     );
   }
@@ -110,7 +143,11 @@ export default function MatchCard({ m, variant = 'full', onDetails, onJoin }) {
         <button type="button" className="btn btn-ghost" onClick={() => onDetails?.(m)}>
           {t('find.card.details')}
         </button>
-        {isFull ? (
+        {joined ? (
+          <button type="button" className="btn mcard__joinjoined" disabled>
+            ✓ {t('find.card.joined')}
+          </button>
+        ) : isFull ? (
           <button type="button" className="btn mcard__joinfull" disabled>
             {t('find.card.full')}
           </button>

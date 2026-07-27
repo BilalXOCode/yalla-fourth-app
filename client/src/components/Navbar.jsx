@@ -4,11 +4,23 @@
 import { NavLink } from 'react-router-dom';
 import { useLang } from '../context/LangContext.jsx';
 import { useTextSize } from '../context/TextSizeContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import './Navbar.css';
+
+function initialsOf(name) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
+}
 
 export default function Navbar() {
   const { t, lang, setLang } = useLang();
   const { decrease, increase, reset, canDecrease, canIncrease } = useTextSize();
+  const { user, logout } = useAuth();
 
   const links = [
     { to: '/', key: 'home', end: true },
@@ -92,9 +104,21 @@ export default function Navbar() {
             </button>
           </div>
 
-          <NavLink to="/account" className="btn btn-primary nav__login">
-            {t('nav.login')}
-          </NavLink>
+          {user ? (
+            <div className="nav__user">
+              <NavLink to="/account" className="nav__userchip" aria-label={t('nav.account')}>
+                <span className="nav__avatar">{initialsOf(user.name)}</span>
+                <span className="nav__username">{user.name.split(/\s+/)[0]}</span>
+              </NavLink>
+              <button type="button" className="btn btn-ghost nav__logout" onClick={logout}>
+                {t('nav.logout')}
+              </button>
+            </div>
+          ) : (
+            <NavLink to="/account" className="btn btn-primary nav__login">
+              {t('nav.login')}
+            </NavLink>
+          )}
         </div>
       </div>
     </header>

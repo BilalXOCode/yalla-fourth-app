@@ -2,6 +2,7 @@
 const express = require('express');
 const Match = require('../models/Match.js');
 const PadelMatch = require('../lib/PadelMatch.js');
+const auth = require('../middleware/auth.js');
 
 const router = express.Router();
 
@@ -60,6 +61,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/matches/mine  -> matches the logged-in user hosts or has joined.
+// Defined BEFORE "/:id" so "mine" is not treated as an id.
+router.get('/mine', auth, async (req, res) => {
+  try {
+    const docs = await Match.find({
+      $or: [{ host: req.userId }, { players: req.userId }],
+    })
+      .sort({ date: 1, time: 1 })
+      .lean();
+
+    const matches = docs.map((d) => {
+      const card = new PadelMatch(d).toCard();
+      const isHost = String(d.host) === String(req.userId);
+      return { ...card, role: isHost ? 'hosting' : 'joined' };
+    });
+
+    res.json({ count: matches.length, matches });
+  } catch (err) {
+    console.error('GET /api/matches/mine failed:', err.message);
+    res.status(500).json({ error: 'Could not load your matches.' });
+  }
+});
+
 // GET /api/matches/:id  -> one match (used by the details modal in Stage 4).
 router.get('/:id', async (req, res) => {
   try {
@@ -74,4 +98,34 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// POST /api/matches/:id/join  -> the logged-in user joins a match (a write).
+router.post('/:id/join', auth, async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.status(404).json({ error: 'Match not found.' });
+
+    const info = new PadelMatch(match);
+
+    // Cannot join a full match.
+    if (info.isFull) return res.status(409).json({ error: 'This match is already full.' });
+
+    // Cannot join the same match twice.
+    const already = match.players.some((p) => String(p) === String(req.userId));
+    if (already || String(match.host) === String(req.userId)) {
+      return res.status(409).json({ error: 'You are already in this match.' });
+    }
+
+    match.players.push(req.userId);
+    match.spotsTaken = (match.spotsTaken ?? 0) + 1;
+    await match.save();
+
+    res.status(201).json({ match: new PadelMatch(match).toCard() });
+  } catch (err) {
+    if (err.name === 'CastError') return res.status(404).json({ error: 'Match not found.' });
+    console.error('POST /api/matches/:id/join failed:', err.message);
+    res.status(500).json({ error: 'Could not join the match. Please try again.' });
+  }
+});
+
 module.exports = router;
+

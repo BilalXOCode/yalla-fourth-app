@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { LangProvider } from './context/LangContext.jsx';
 import { TextSizeProvider } from './context/TextSizeContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 // Load design tokens + global base FIRST so component styles (imported inside
 // App) can override them when needed.
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <LangProvider>
         <TextSizeProvider>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </TextSizeProvider>
       </LangProvider>
     </BrowserRouter>

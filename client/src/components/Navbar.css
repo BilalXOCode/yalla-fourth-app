@@ -134,6 +134,55 @@
   padding: 0.55em 1.1em;
 }
 
+/* Logged-in chip + logout */
+.nav__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav__userchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--speed-fast) var(--ease);
+}
+:root[dir='rtl'] .nav__userchip {
+  padding: 4px 4px 4px 12px;
+}
+.nav__userchip:hover {
+  border-color: var(--lime);
+}
+.nav__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--on-lime);
+  background: var(--lime);
+}
+.nav__username {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.nav__logout {
+  font-size: 0.78rem;
+  padding: 0.5em 0.9em;
+}
+@media (max-width: 560px) {
+  .nav__username,
+  .nav__logout {
+    display: none;
+  }
+}
+
 /* --- Small screens: hide centre links (a mobile menu comes later) --- */
 @media (max-width: 900px) {
   .nav__links {

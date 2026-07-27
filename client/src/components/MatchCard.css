@@ -214,3 +214,52 @@
   transform: none;
   box-shadow: none;
 }
+
+/* Already-joined button (Find discover cards) */
+.mcard__joinjoined {
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 45%, transparent);
+  cursor: default;
+}
+.mcard__joinjoined:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- "My matches" variant ---- */
+.rolebadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+.rolebadge--hosting {
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lime) 45%, transparent);
+}
+.rolebadge--joined {
+  color: var(--skill-improver);
+  background: color-mix(in srgb, var(--skill-improver) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--skill-improver) 45%, transparent);
+}
+.mcard__minerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+}
+.mcard__mineinfo {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.mcard__viewbtn {
+  width: 100%;
+  margin-top: 16px;
+}

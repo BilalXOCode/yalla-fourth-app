@@ -1,9 +1,12 @@
 // Yalla Fourth - Express server
 // In production this single service serves BOTH the REST API and the
 // built React app (client/dist), so the whole site runs on one URL.
-require('dotenv').config();
-
 const path = require('path');
+// Load server/.env explicitly (by absolute path) so it works no matter which
+// folder the server is started from. On Render there is no .env file and the
+// variables come from the dashboard, which dotenv leaves untouched.
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db.js');
@@ -23,11 +26,12 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     app: 'Yalla Fourth',
-    stage: 3,
+    stage: 5,
     time: new Date().toISOString(),
   });
 });
 
+app.use('/api/auth', require('./routes/auth.js'));
 app.use('/api/venues', require('./routes/venues.js'));
 app.use('/api/matches', require('./routes/matches.js'));
 

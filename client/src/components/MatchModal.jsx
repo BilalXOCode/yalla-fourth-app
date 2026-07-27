@@ -4,15 +4,18 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLang } from '../context/LangContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../lib/api.js';
 import { dayLabel } from '../lib/formatDate.js';
 import './MatchModal.css';
 
-export default function MatchModal({ matchId, onClose }) {
+export default function MatchModal({ matchId, onClose, onJoin, joined = false }) {
   const { t, lang } = useLang();
+  const { user } = useAuth();
   const [m, setM] = useState(null);
   const [state, setState] = useState('loading'); // loading | ready | error
-  const [showLogin, setShowLogin] = useState(false);
+  const [joinState, setJoinState] = useState(joined ? 'joined' : 'idle'); // idle | joining | joined | error
+  const [joinError, setJoinError] = useState('');
 
   // Load the match details.
   useEffect(() => {
@@ -44,6 +47,21 @@ export default function MatchModal({ matchId, onClose }) {
   }, [onClose]);
 
   const isFull = m && (m.status === 'full' || m.spotsLeft <= 0);
+  const isJoined = joinState === 'joined';
+
+  async function handleJoinClick() {
+    if (!onJoin) return;
+    setJoinState('joining');
+    setJoinError('');
+    try {
+      const updated = await onJoin(m.id);
+      if (updated) setM(updated);
+      setJoinState('joined');
+    } catch (err) {
+      setJoinError(err.message);
+      setJoinState('error');
+    }
+  }
 
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={t('find.modal.title')} onMouseDown={onClose}>
@@ -100,11 +118,13 @@ export default function MatchModal({ matchId, onClose }) {
             ) : null}
 
             <div className="modal__actions">
-              {isFull ? (
+              {isJoined ? (
+                <div className="modal__joinednote">✓ {t('find.modal.joined')}</div>
+              ) : isFull ? (
                 <button type="button" className="btn mcard__joinfull" disabled>
                   {t('find.modal.full')}
                 </button>
-              ) : showLogin ? (
+              ) : !user ? (
                 <div className="modal__loginnote">
                   {t('find.modal.loginToJoin')}{' '}
                   <NavLink to="/account" className="modal__loginlink" onClick={onClose}>
@@ -112,10 +132,16 @@ export default function MatchModal({ matchId, onClose }) {
                   </NavLink>
                 </div>
               ) : (
-                <button type="button" className="btn btn-primary" onClick={() => setShowLogin(true)}>
-                  {t('find.modal.join')}
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleJoinClick}
+                  disabled={joinState === 'joining'}
+                >
+                  {joinState === 'joining' ? t('find.modal.joining') : t('find.modal.join')}
                 </button>
               )}
+              {joinState === 'error' && <p className="modal__joinerror">{joinError}</p>}
             </div>
           </div>
         )}

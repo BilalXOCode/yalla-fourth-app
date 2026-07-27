@@ -145,3 +145,18 @@
 .modal__loginlink:hover {
   text-decoration: underline;
 }
+.modal__joinednote {
+  text-align: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  color: var(--ok);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--ok) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent);
+}
+.modal__joinerror {
+  margin-top: 10px;
+  text-align: center;
+  color: var(--error);
+  font-size: 0.9rem;
+}

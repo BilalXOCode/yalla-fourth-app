@@ -2,8 +2,9 @@
 // filters real matches from the database via GET query parameters, the match
 // cards grid, and a details modal. On mobile the filters collapse into a drawer.
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useLang } from '../context/LangContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import Reveal from '../components/Reveal.jsx';
 import MatchCard from '../components/MatchCard.jsx';
 import MatchModal from '../components/MatchModal.jsx';
@@ -36,6 +37,8 @@ function Select({ label, name, value, onChange, children }) {
 
 export default function FindMatches() {
   const { t } = useLang();
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState('discover');
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [venueData, setVenueData] = useState({ venues: [], areas: [] });
@@ -43,6 +46,10 @@ export default function FindMatches() {
   const [listState, setListState] = useState('loading'); // loading | ready | error
   const [modalId, setModalId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [joinedIds, setJoinedIds] = useState(() => new Set());
+  const [joinError, setJoinError] = useState('');
+  const [mine, setMine] = useState([]);
+  const [mineState, setMineState] = useState('loading'); // loading | ready | error
 
   const setFilter = (e) => setFilters((f) => ({ ...f, [e.target.name]: e.target.value }));
   const resetFilters = () => setFilters(EMPTY_FILTERS);
@@ -93,6 +100,58 @@ export default function FindMatches() {
     return list.map((v) => v.name);
   }, [venueData, filters.area]);
 
+  // Which matches the logged-in user is already in (marks Discover cards).
+  useEffect(() => {
+    if (!user) {
+      setJoinedIds(new Set());
+      return;
+    }
+    let active = true;
+    api
+      .myMatches(token)
+      .then((d) => active && setJoinedIds(new Set((d.matches || []).map((x) => x.id))))
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [user, token]);
+
+  // My Matches tab data (requires login).
+  useEffect(() => {
+    if (tab !== 'mine' || !user) return;
+    let active = true;
+    setMineState('loading');
+    api
+      .myMatches(token)
+      .then((d) => {
+        if (!active) return;
+        setMine(d.matches || []);
+        setMineState('ready');
+      })
+      .catch(() => active && setMineState('error'));
+    return () => {
+      active = false;
+    };
+  }, [tab, user, token]);
+
+  // Core join: saves the user into the match (POST), then updates the UI.
+  async function joinCore(id) {
+    const d = await api.joinMatch(id, token);
+    setMatches((ms) => ms.map((m) => (m.id === id ? d.match : m)));
+    setJoinedIds((s) => new Set(s).add(id));
+    return d.match;
+  }
+
+  // Card Join button: log-in prompt if needed, otherwise join.
+  function cardJoin(id) {
+    setJoinError('');
+    if (!user) {
+      navigate('/account');
+      return;
+    }
+    joinCore(id).catch((e) => setJoinError(e.message));
+  }
+
   return (
     <main className="find">
       <div className="container">
@@ -121,6 +180,7 @@ export default function FindMatches() {
             onClick={() => setTab('mine')}
           >
             {t('find.tabs.mine')}
+            {user && joinedIds.size > 0 ? <span className="tab__count">{joinedIds.size}</span> : null}
           </button>
         </div>
 
@@ -233,11 +293,18 @@ export default function FindMatches() {
             {listState === 'ready' && matches.length === 0 && (
               <p className="find__msg">{t('find.empty')}</p>
             )}
+            {joinError && <p className="find__joinerror">{joinError}</p>}
             {listState === 'ready' && matches.length > 0 && (
               <div className="find__grid">
                 {matches.map((m, idx) => (
                   <Reveal key={m.id} delay={Math.min(idx, 6) * 60}>
-                    <MatchCard m={m} variant="full" onDetails={(x) => setModalId(x.id)} onJoin={(x) => setModalId(x.id)} />
+                    <MatchCard
+                      m={m}
+                      variant="full"
+                      joined={joinedIds.has(m.id)}
+                      onDetails={(x) => setModalId(x.id)}
+                      onJoin={(x) => cardJoin(x.id)}
+                    />
                   </Reveal>
                 ))}
               </div>
@@ -245,17 +312,42 @@ export default function FindMatches() {
           </>
         )}
 
-        {tab === 'mine' && (
-          <div className="find__mine">
-            <p>{t('find.mine.needLogin')}</p>
-            <NavLink to="/account" className="btn btn-primary">
-              {t('find.mine.login')}
-            </NavLink>
-          </div>
-        )}
+        {tab === 'mine' &&
+          (!user ? (
+            <div className="find__mine">
+              <p>{t('find.mine.needLogin')}</p>
+              <NavLink to="/account" className="btn btn-primary">
+                {t('find.mine.login')}
+              </NavLink>
+            </div>
+          ) : (
+            <>
+              {mineState === 'loading' && <p className="find__msg">{t('find.mine.loading')}</p>}
+              {mineState === 'error' && <p className="find__msg">{t('find.mine.error')}</p>}
+              {mineState === 'ready' && mine.length === 0 && (
+                <p className="find__msg">{t('find.mine.empty')}</p>
+              )}
+              {mineState === 'ready' && mine.length > 0 && (
+                <div className="find__grid">
+                  {mine.map((m, idx) => (
+                    <Reveal key={m.id} delay={Math.min(idx, 6) * 60}>
+                      <MatchCard m={m} variant="mine" onDetails={(x) => setModalId(x.id)} />
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </>
+          ))}
       </div>
 
-      {modalId && <MatchModal matchId={modalId} onClose={() => setModalId(null)} />}
+      {modalId && (
+        <MatchModal
+          matchId={modalId}
+          joined={joinedIds.has(modalId)}
+          onJoin={joinCore}
+          onClose={() => setModalId(null)}
+        />
+      )}
     </main>
   );
 }

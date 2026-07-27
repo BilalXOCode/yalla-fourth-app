@@ -51,6 +51,18 @@
   background: var(--lime);
   color: var(--on-lime);
 }
+.tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-inline-start: 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 0.72rem;
+}
 .tab:not(.is-active):hover {
   color: var(--text);
 }
@@ -176,6 +188,15 @@
   background: var(--surface);
   border: 1px dashed var(--border);
   border-radius: var(--radius-lg);
+}
+.find__joinerror {
+  margin-top: 20px;
+  padding: 12px 16px;
+  text-align: center;
+  color: var(--error);
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 35%, transparent);
+  border-radius: var(--radius);
 }
 
 /* ---------- My matches (needs login until Stage 5) ---------- */

@@ -6,6 +6,7 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import Home from './pages/Home.jsx';
 import FindMatches from './pages/FindMatches.jsx';
+import AccountAccess from './pages/AccountAccess.jsx';
 import Placeholder from './pages/Placeholder.jsx';
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/account" element={<Placeholder titleKey="account" />} />
+        <Route path="/account" element={<AccountAccess />} />
         <Route path="/find" element={<FindMatches />} />
         <Route path="/create" element={<Placeholder titleKey="create" />} />
         <Route path="/support" element={<Placeholder titleKey="support" />} />

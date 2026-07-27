@@ -1,7 +1,8 @@
 // Seed script: fills MongoDB with sample UAE venues and realistic matches.
 // Run from the server folder with:  npm run seed
 // (or from the app root with:       npm run seed)
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const mongoose = require('mongoose');
 const Venue = require('../models/Venue.js');
 const Match = require('../models/Match.js');
