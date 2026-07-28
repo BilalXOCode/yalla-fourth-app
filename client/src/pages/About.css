@@ -133,7 +133,10 @@
   background: radial-gradient(circle at 50% 38%, var(--surface-3), var(--bg-elev));
   border: 1px solid var(--border);
 }
-.ab__card.is-lead .ab__avatar {
+/* The lime neon ring: on the lead card's avatar and on any avatar with a
+   real photo, so photo members share the same treatment as the founder. */
+.ab__card.is-lead .ab__avatar,
+.ab__avatar--photo {
   border: 3px solid var(--lime);
   box-shadow: var(--glow-soft);
 }

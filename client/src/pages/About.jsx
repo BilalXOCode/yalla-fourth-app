@@ -12,7 +12,7 @@ import './About.css';
 // (about.members) and are matched to these by array position.
 const MEMBERS = [
   { id: '1088022', photo: '/bilal.jpeg', lead: true },
-  { id: '1075413' },
+  { id: '1075413', photo: '/mahmoud.jpeg' },
   { id: '1086910' },
   { id: '1086912' },
   { id: '1088314' },
@@ -72,7 +72,7 @@ export default function About() {
                     <span className="ab__badgestar" aria-hidden="true">★</span> {t('about.leadBadge')}
                   </span>
                 )}
-                <div className="ab__avatar">
+                <div className={`ab__avatar ${m.photo ? 'ab__avatar--photo' : ''}`}>
                   {m.photo ? (
                     <img src={m.photo} alt={`${t('about.photoAlt')} ${info.name}`} className="ab__photo" />
                   ) : (
