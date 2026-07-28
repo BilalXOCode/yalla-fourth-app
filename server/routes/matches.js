@@ -18,6 +18,14 @@ function nowParts() {
   };
 }
 
+// Is this match's start (date + time strings) still in the future?
+// date and time are zero-padded strings, so string comparison is chronological.
+function isUpcoming(dateStr, timeStr, now) {
+  if (dateStr > now.date) return true;
+  if (dateStr < now.date) return false;
+  return timeStr > now.time; // same day: only start times later than right now
+}
+
 // GET /api/matches
 // Optional query filters (all read-only): area, venue, skill, group, age,
 // status, q (search), limit. Returns match cards shaped by the PadelMatch class.
@@ -45,6 +53,11 @@ router.get('/', async (req, res) => {
     const docs = await Match.find(query).sort({ date: 1, time: 1 }).lean();
 
     let cards = PadelMatch.toCards(docs);
+
+    // Discover only shows upcoming matches. Past ones are filtered out of the
+    // response (the records stay in the database, this is not a delete).
+    const now = nowParts();
+    cards = cards.filter((c) => isUpcoming(c.date, c.time, now));
 
     // Derived / bucketed fields are filtered after shaping.
     if (status) cards = cards.filter((c) => c.status === status);
@@ -188,6 +201,12 @@ router.post('/:id/join', auth, async (req, res) => {
     if (!match) return res.status(404).json({ error: 'Match not found.' });
 
     const info = new PadelMatch(match);
+
+    // Cannot join a match that has already started (it may age out mid-session).
+    // A code is returned so the frontend can show a localised message.
+    if (!isUpcoming(match.date, match.time, nowParts())) {
+      return res.status(409).json({ error: 'This match has already started.', code: 'match_started' });
+    }
 
     // Cannot join a full match.
     if (info.isFull) return res.status(409).json({ error: 'This match is already full.' });

@@ -14,8 +14,11 @@ async function request(path, { method = 'GET', body, token } = {}) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    // Surface the server's friendly message when there is one.
-    throw new Error(data.error || `Request failed (${res.status})`);
+    // Surface the server's friendly message when there is one, and keep any
+    // machine code so callers can show a localised message instead.
+    const err = new Error(data.error || `Request failed (${res.status})`);
+    if (data.code) err.code = data.code;
+    throw err;
   }
   return data;
 }

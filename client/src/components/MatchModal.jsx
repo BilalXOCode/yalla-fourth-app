@@ -66,7 +66,7 @@ export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete
       if (updated) setM(updated);
       setJoinState('joined');
     } catch (err) {
-      setJoinError(err.message);
+      setJoinError(err.code === 'match_started' ? t('find.joinStarted') : err.message);
       setJoinState('error');
     }
   }

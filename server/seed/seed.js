@@ -21,21 +21,36 @@ const VENUES = [
   { name: 'Pace by SECC', area: 'Aljada', emirate: 'Sharjah' },
 ];
 
-// A date N days from today as YYYY-MM-DD.
-function ymd(daysAhead) {
-  const d = new Date();
-  d.setDate(d.getDate() + daysAhead);
-  return d.toISOString().slice(0, 10);
+// A start slot a given number of hours from right now, rounded up to the next
+// half hour so times look natural. Returns { date: 'YYYY-MM-DD', time: 'HH:MM' }
+// in local time. Because every slot is anchored to "now", the seeded matches are
+// always in the future no matter which day (or time of day) the seed is run.
+function slot(hoursFromNow) {
+  const d = new Date(Date.now() + hoursFromNow * 60 * 60 * 1000);
+  const m = d.getMinutes();
+  if (m !== 0 && m !== 30) {
+    if (m < 30) d.setMinutes(30, 0, 0);
+    else d.setHours(d.getHours() + 1, 0, 0, 0); // rolls the day over cleanly at 23:xx
+  } else {
+    d.setSeconds(0, 0);
+  }
+  const p = (x) => String(x).padStart(2, '0');
+  return {
+    date: `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`,
+    time: `${p(d.getHours())}:${p(d.getMinutes())}`,
+  };
 }
 
 // spotsTaken is set so spotsLeft = capacity(4) - spotsTaken lines up with the
 // "N left" shown on the cards (status is derived: 1 left = almost full, 0 = full).
 function buildMatches() {
-  return [
+  // hoursFromNow spreads the matches across today (later on) and the next few
+  // days, with a mix of times. slot() turns each into a real future date/time.
+  const defs = [
     {
       title: 'Evening game at Zayed Sports City', venue: 'Zayed Sports City Padel',
       area: 'Zayed Sports City', location: 'Zayed Sports City, Abu Dhabi',
-      date: ymd(0), time: '16:00', durationMinutes: 90,
+      hoursFromNow: 2, durationMinutes: 90,
       skillLevel: 'intermediate', ageGroup: '30 to 45', groupType: 'mixed',
       capacity: 4, spotsTaken: 3, hostName: 'Khalid Al Falasi', hostInitials: 'KA',
       notes: 'Balls provided, just bring your racket.',
@@ -43,7 +58,7 @@ function buildMatches() {
     {
       title: 'After work doubles', venue: 'Just Padel',
       area: 'Al Quoz', location: 'Al Quoz, Dubai · Court 4',
-      date: ymd(0), time: '18:30', durationMinutes: 90,
+      hoursFromNow: 4, durationMinutes: 90,
       skillLevel: 'intermediate', ageGroup: '18 to 30', groupType: 'mixed',
       capacity: 4, spotsTaken: 2, hostName: 'Saeed Al Mansoori', hostInitials: 'SA',
       notes: '',
@@ -51,7 +66,7 @@ function buildMatches() {
     {
       title: 'Competitive men’s night', venue: 'Matcha Club',
       area: 'Al Quoz', location: 'Al Quoz, Dubai',
-      date: ymd(0), time: '20:00', durationMinutes: 60,
+      hoursFromNow: 6, durationMinutes: 60,
       skillLevel: 'advanced', ageGroup: '18 to 30', groupType: 'mens',
       capacity: 4, spotsTaken: 3, hostName: 'Omar Haddad', hostInitials: 'OH',
       notes: 'Fast paced, advanced players only please.',
@@ -59,7 +74,7 @@ function buildMatches() {
     {
       title: 'Late night rally', venue: 'Dubai Sports City Padel',
       area: 'Dubai Sports City', location: 'Dubai Sports City, Dubai',
-      date: ymd(0), time: '22:00', durationMinutes: 90,
+      hoursFromNow: 8, durationMinutes: 90,
       skillLevel: 'advanced', ageGroup: '18 to 30', groupType: 'mixed',
       capacity: 4, spotsTaken: 4, hostName: 'Rashed Al Nuaimi', hostInitials: 'RA',
       notes: '',
@@ -67,7 +82,7 @@ function buildMatches() {
     {
       title: 'Early morning session', venue: 'The Smash Room',
       area: 'Umm Suqeim', location: 'Umm Suqeim, Dubai',
-      date: ymd(1), time: '07:00', durationMinutes: 60,
+      hoursFromNow: 20, durationMinutes: 60,
       skillLevel: 'improver', ageGroup: '30 to 45', groupType: 'mixed',
       capacity: 4, spotsTaken: 1, hostName: 'Priya Nair', hostInitials: 'PN',
       notes: 'Relaxed pace, good for warming up the week.',
@@ -75,7 +90,7 @@ function buildMatches() {
     {
       title: 'Ladies friendly', venue: 'Reform Athletica',
       area: 'Dubai Design District', location: 'Dubai Design District, Dubai',
-      date: ymd(1), time: '19:00', durationMinutes: 90,
+      hoursFromNow: 23, durationMinutes: 90,
       skillLevel: 'beginner', ageGroup: '18 to 30', groupType: 'womens',
       capacity: 4, spotsTaken: 2, hostName: 'Mariam Al Suwaidi', hostInitials: 'MA',
       notes: 'Beginners very welcome.',
@@ -83,7 +98,7 @@ function buildMatches() {
     {
       title: 'Yas Island doubles', venue: 'Yas Padel Hub',
       area: 'Yas Island', location: 'Yas Island, Abu Dhabi · Court 4',
-      date: ymd(1), time: '21:00', durationMinutes: 90,
+      hoursFromNow: 27, durationMinutes: 90,
       skillLevel: 'advanced', ageGroup: '18 to 30', groupType: 'mixed',
       capacity: 4, spotsTaken: 2, hostName: 'James Whitfield', hostInitials: 'JW',
       notes: '',
@@ -91,7 +106,7 @@ function buildMatches() {
     {
       title: 'Junior friendly', venue: 'Padel Point',
       area: 'Al Majaz', location: 'Al Majaz, Sharjah',
-      date: ymd(1), time: '17:30', durationMinutes: 60,
+      hoursFromNow: 31, durationMinutes: 60,
       skillLevel: 'beginner', ageGroup: 'under 18', groupType: 'mens',
       capacity: 4, spotsTaken: 2, hostName: 'Yusuf Rahman', hostInitials: 'YR',
       notes: 'Under 18 only.',
@@ -99,7 +114,7 @@ function buildMatches() {
     {
       title: 'Weekend warm up', venue: 'Reem Central Padel',
       area: 'Al Reem Island', location: 'Al Reem Island, Abu Dhabi',
-      date: ymd(2), time: '09:00', durationMinutes: 90,
+      hoursFromNow: 46, durationMinutes: 90,
       skillLevel: 'improver', ageGroup: '45 plus', groupType: 'mixed',
       capacity: 4, spotsTaken: 1, hostName: 'Aisha Al Ketbi', hostInitials: 'AA',
       notes: '',
@@ -107,12 +122,15 @@ function buildMatches() {
     {
       title: 'Sharjah social', venue: 'Pace by SECC',
       area: 'Aljada', location: 'Aljada, Sharjah',
-      date: ymd(3), time: '20:30', durationMinutes: 90,
+      hoursFromNow: 70, durationMinutes: 90,
       skillLevel: 'intermediate', ageGroup: '30 to 45', groupType: 'womens',
       capacity: 4, spotsTaken: 3, hostName: 'Elena Petrova', hostInitials: 'EP',
       notes: 'Friendly group, come say hi.',
     },
   ];
+
+  // Turn each hoursFromNow into a real, always-future date + time.
+  return defs.map(({ hoursFromNow, ...rest }) => ({ ...rest, ...slot(hoursFromNow) }));
 }
 
 async function run() {

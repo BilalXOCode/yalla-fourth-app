@@ -157,7 +157,7 @@ export default function FindMatches() {
       navigate('/account');
       return;
     }
-    joinCore(id).catch((e) => setJoinError(e.message));
+    joinCore(id).catch((e) => setJoinError(e.code === 'match_started' ? t('find.joinStarted') : e.message));
   }
 
   // Core leave: removes the user from the match (POST), then updates the UI

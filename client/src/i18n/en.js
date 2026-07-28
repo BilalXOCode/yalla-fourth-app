@@ -132,6 +132,7 @@ export default {
     empty: 'No matches fit these filters. Try clearing a few.',
     error: 'We could not load matches right now. Please try again later.',
     confirmDelete: 'Delete this match? This cannot be undone.',
+    joinStarted: 'This match has already started.',
     leave: {
       startsAt: 'This match starts at',
       until: 'You may leave without a penalty until',
