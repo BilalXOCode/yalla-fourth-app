@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Reveal from '../components/Reveal.jsx';
 import MatchCard from '../components/MatchCard.jsx';
 import MatchModal from '../components/MatchModal.jsx';
+import ConfirmModal from '../components/ConfirmModal.jsx';
 import { api } from '../lib/api.js';
 import './FindMatches.css';
 
@@ -49,6 +50,8 @@ export default function FindMatches() {
   const [joinedIds, setJoinedIds] = useState(() => new Set());
   const [hostingIds, setHostingIds] = useState(() => new Set());
   const [joinError, setJoinError] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const [mine, setMine] = useState([]);
   const [mineState, setMineState] = useState('loading'); // loading | ready | error
 
@@ -194,11 +197,25 @@ export default function FindMatches() {
     leaveCore(id).catch((e) => setJoinError(e.message));
   }
 
-  // Card Delete button, with a simple confirmation first.
+  // Card Delete button: open the themed confirmation modal first.
   function cardDelete(id) {
     setJoinError('');
-    if (!window.confirm(t('find.confirmDelete'))) return;
-    deleteCore(id).catch((e) => setJoinError(e.message));
+    setConfirmDeleteId(id);
+  }
+
+  // Confirm modal: run the real delete, then close the modal.
+  async function confirmDeleteNow() {
+    if (!confirmDeleteId) return;
+    setDeleting(true);
+    try {
+      await deleteCore(confirmDeleteId);
+      setConfirmDeleteId(null);
+    } catch (e) {
+      setJoinError(e.message);
+      setConfirmDeleteId(null);
+    } finally {
+      setDeleting(false);
+    }
   }
 
   return (
@@ -409,6 +426,17 @@ export default function FindMatches() {
           onLeave={leaveCore}
           onDelete={deleteCore}
           onClose={() => setModalId(null)}
+        />
+      )}
+
+      {confirmDeleteId && (
+        <ConfirmModal
+          message={t('find.confirmDelete')}
+          confirmLabel={t('find.card.delete')}
+          cancelLabel={t('find.cancel')}
+          busy={deleting}
+          onConfirm={confirmDeleteNow}
+          onCancel={() => !deleting && setConfirmDeleteId(null)}
         />
       )}
     </main>

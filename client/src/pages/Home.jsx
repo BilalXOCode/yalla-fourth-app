@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLang } from '../context/LangContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import Reveal from '../components/Reveal.jsx';
 import MatchCard from '../components/MatchCard.jsx';
 import useReducedMotion from '../lib/useReducedMotion.js';
@@ -74,6 +75,7 @@ function HeroTitle({ lead, highlight }) {
 
 export default function Home() {
   const { t, lang, setLang } = useLang();
+  const { user } = useAuth();
   const reduced = useReducedMotion();
 
   const steps = t('home.how.steps');
@@ -125,12 +127,20 @@ export default function Home() {
           <HeroTitle lead={t('home.hero.titleLead')} highlight={t('home.hero.titleHighlight')} />
           <p className="hero__sub">{t('home.hero.sub')}</p>
           <div className="hero__cta">
-            <NavLink to="/account" className="btn btn-primary">
-              {t('home.hero.signup')}
-            </NavLink>
-            <NavLink to="/account" className="btn btn-ghost">
-              {t('home.hero.login')}
-            </NavLink>
+            {user ? (
+              <NavLink to="/find" className="btn btn-primary">
+                {t('home.hero.findMatch')}
+              </NavLink>
+            ) : (
+              <>
+                <NavLink to="/account" className="btn btn-primary">
+                  {t('home.hero.signup')}
+                </NavLink>
+                <NavLink to="/account" className="btn btn-ghost">
+                  {t('home.hero.login')}
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
 

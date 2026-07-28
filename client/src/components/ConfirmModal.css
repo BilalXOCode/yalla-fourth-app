@@ -1,0 +1,39 @@
+/* Confirmation dialog. Uses the shared .modal / .modal__panel shell from
+   MatchModal.css; these are only the small layout + danger-button extras. */
+.confirm__panel {
+  max-width: 420px;
+  text-align: center;
+}
+.confirm__msg {
+  color: var(--white);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  margin-top: 2px;
+}
+.confirm__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 26px;
+}
+.confirm__actions .btn {
+  width: 100%;
+}
+
+/* Danger confirm button: same recipe as the existing Delete match buttons. */
+.confirm__delete {
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 45%, transparent);
+}
+.confirm__delete:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--error) 20%, transparent);
+  border-color: var(--error);
+  box-shadow: none;
+}
+.confirm__delete:disabled,
+.confirm__cancel:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

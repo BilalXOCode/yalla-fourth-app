@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../lib/api.js';
 import { dayLabel } from '../lib/formatDate.js';
 import { leaveDeadline, matchStart, formatClock } from '../lib/matchRules.js';
+import ConfirmModal from './ConfirmModal.jsx';
 import './MatchModal.css';
 
 export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete, joined = false, isHost = false }) {
@@ -19,6 +20,7 @@ export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete
   const [joinError, setJoinError] = useState('');
   const [actionState, setActionState] = useState('idle'); // idle | leaving | deleting | error
   const [actionError, setActionError] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   // Load the match details.
   useEffect(() => {
@@ -84,9 +86,16 @@ export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete
     }
   }
 
-  async function handleDeleteClick() {
+  // Open the themed confirmation modal (replaces the native confirm popup).
+  function handleDeleteClick() {
     if (!onDelete) return;
-    if (!window.confirm(t('find.confirmDelete'))) return;
+    setActionError('');
+    setConfirmingDelete(true);
+  }
+
+  // Runs after the user confirms in the modal.
+  async function doDelete() {
+    if (!onDelete) return;
     setActionState('deleting');
     setActionError('');
     try {
@@ -95,10 +104,12 @@ export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete
     } catch (err) {
       setActionError(err.message);
       setActionState('error');
+      setConfirmingDelete(false);
     }
   }
 
   return (
+    <>
     <div className="modal" role="dialog" aria-modal="true" aria-label={t('find.modal.title')} onMouseDown={onClose}>
       <div className="modal__panel" onMouseDown={(e) => e.stopPropagation()}>
         <button type="button" className="modal__close" onClick={onClose} aria-label={t('find.modal.close')}>
@@ -208,5 +219,17 @@ export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete
         )}
       </div>
     </div>
+
+    {confirmingDelete && (
+      <ConfirmModal
+        message={t('find.confirmDelete')}
+        confirmLabel={t('find.modal.delete')}
+        cancelLabel={t('find.cancel')}
+        busy={actionState === 'deleting'}
+        onConfirm={doDelete}
+        onCancel={() => actionState !== 'deleting' && setConfirmingDelete(false)}
+      />
+    )}
+    </>
   );
 }

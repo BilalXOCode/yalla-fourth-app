@@ -37,6 +37,7 @@ export default {
       sub: 'Meet players at your level, join an open match or start your own. No court booking, no fees, just the game.',
       signup: 'Sign up',
       login: 'Log in',
+      findMatch: 'Find a match',
       scroll: 'Explore more',
     },
     how: {
@@ -132,6 +133,7 @@ export default {
     empty: 'No matches fit these filters. Try clearing a few.',
     error: 'We could not load matches right now. Please try again later.',
     confirmDelete: 'Delete this match? This cannot be undone.',
+    cancel: 'Cancel',
     joinStarted: 'This match has already started.',
     leave: {
       startsAt: 'This match starts at',
