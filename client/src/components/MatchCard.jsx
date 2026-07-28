@@ -36,7 +36,7 @@ function CourtDots({ capacity, spotsLeft }) {
   );
 }
 
-export default function MatchCard({ m, variant = 'full', onDetails, onJoin, joined = false }) {
+export default function MatchCard({ m, variant = 'full', onDetails, onJoin, onLeave, onDelete, joined = false, isHost = false, isJoined = false }) {
   const { t, lang } = useLang();
   const isFull = m.status === 'full' || m.spotsLeft <= 0;
 
@@ -96,9 +96,20 @@ export default function MatchCard({ m, variant = 'full', onDetails, onJoin, join
           <span className="mcard__mineinfo">{spotsLine}</span>
           <CourtDots capacity={m.capacity} spotsLeft={m.spotsLeft} />
         </div>
-        <button type="button" className="btn btn-ghost mcard__viewbtn" onClick={() => onDetails?.(m)}>
-          {t('find.mine.viewDetails')}
-        </button>
+        <div className="mcard__minefoot">
+          <button type="button" className="btn btn-ghost mcard__viewbtn" onClick={() => onDetails?.(m)}>
+            {t('find.mine.viewDetails')}
+          </button>
+          {m.role === 'hosting' ? (
+            <button type="button" className="btn mcard__delete" onClick={() => onDelete?.(m)}>
+              {t('find.mine.delete')}
+            </button>
+          ) : (
+            <button type="button" className="btn mcard__leave" onClick={() => onLeave?.(m)}>
+              {t('find.mine.leave')}
+            </button>
+          )}
+        </div>
       </article>
     );
   }
@@ -143,9 +154,13 @@ export default function MatchCard({ m, variant = 'full', onDetails, onJoin, join
         <button type="button" className="btn btn-ghost" onClick={() => onDetails?.(m)}>
           {t('find.card.details')}
         </button>
-        {joined ? (
-          <button type="button" className="btn mcard__joinjoined" disabled>
-            ✓ {t('find.card.joined')}
+        {isHost ? (
+          <button type="button" className="btn mcard__delete" onClick={() => onDelete?.(m)}>
+            {t('find.card.delete')}
+          </button>
+        ) : isJoined ? (
+          <button type="button" className="btn mcard__leave" onClick={() => onLeave?.(m)}>
+            {t('find.card.leave')}
           </button>
         ) : isFull ? (
           <button type="button" className="btn mcard__joinfull" disabled>

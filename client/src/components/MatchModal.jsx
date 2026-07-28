@@ -7,15 +7,18 @@ import { useLang } from '../context/LangContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../lib/api.js';
 import { dayLabel } from '../lib/formatDate.js';
+import { leaveDeadline, matchStart, formatClock } from '../lib/matchRules.js';
 import './MatchModal.css';
 
-export default function MatchModal({ matchId, onClose, onJoin, joined = false }) {
+export default function MatchModal({ matchId, onClose, onJoin, onLeave, onDelete, joined = false, isHost = false }) {
   const { t, lang } = useLang();
   const { user } = useAuth();
   const [m, setM] = useState(null);
   const [state, setState] = useState('loading'); // loading | ready | error
   const [joinState, setJoinState] = useState(joined ? 'joined' : 'idle'); // idle | joining | joined | error
   const [joinError, setJoinError] = useState('');
+  const [actionState, setActionState] = useState('idle'); // idle | leaving | deleting | error
+  const [actionError, setActionError] = useState('');
 
   // Load the match details.
   useEffect(() => {
@@ -49,6 +52,11 @@ export default function MatchModal({ matchId, onClose, onJoin, joined = false })
   const isFull = m && (m.status === 'full' || m.spotsLeft <= 0);
   const isJoined = joinState === 'joined';
 
+  // Display-only leave-deadline line (start time minus the cutoff hours).
+  const startClock = m ? formatClock(matchStart(m.date, m.time), lang) : '';
+  const deadlineClock = m ? formatClock(leaveDeadline(m.date, m.time), lang) : '';
+  const showLeaveInfo = isJoined && !isHost && startClock && deadlineClock;
+
   async function handleJoinClick() {
     if (!onJoin) return;
     setJoinState('joining');
@@ -60,6 +68,33 @@ export default function MatchModal({ matchId, onClose, onJoin, joined = false })
     } catch (err) {
       setJoinError(err.message);
       setJoinState('error');
+    }
+  }
+
+  async function handleLeaveClick() {
+    if (!onLeave) return;
+    setActionState('leaving');
+    setActionError('');
+    try {
+      await onLeave(m.id);
+      onClose();
+    } catch (err) {
+      setActionError(err.message);
+      setActionState('error');
+    }
+  }
+
+  async function handleDeleteClick() {
+    if (!onDelete) return;
+    if (!window.confirm(t('find.confirmDelete'))) return;
+    setActionState('deleting');
+    setActionError('');
+    try {
+      await onDelete(m.id);
+      onClose();
+    } catch (err) {
+      setActionError(err.message);
+      setActionState('error');
     }
   }
 
@@ -117,9 +152,34 @@ export default function MatchModal({ matchId, onClose, onJoin, joined = false })
               </div>
             ) : null}
 
+            {showLeaveInfo && (
+              <p className="modal__leaveinfo">
+                {t('find.leave.startsAt')} {startClock}. {t('find.leave.until')} {deadlineClock}.
+              </p>
+            )}
+
             <div className="modal__actions">
-              {isJoined ? (
-                <div className="modal__joinednote">✓ {t('find.modal.joined')}</div>
+              {isHost ? (
+                <button
+                  type="button"
+                  className="btn mcard__delete modal__actionbtn"
+                  onClick={handleDeleteClick}
+                  disabled={actionState === 'deleting'}
+                >
+                  {actionState === 'deleting' ? t('find.modal.deleting') : t('find.modal.delete')}
+                </button>
+              ) : isJoined ? (
+                <div className="modal__joinedrow">
+                  <div className="modal__joinednote">✓ {t('find.modal.joined')}</div>
+                  <button
+                    type="button"
+                    className="btn mcard__leave modal__actionbtn"
+                    onClick={handleLeaveClick}
+                    disabled={actionState === 'leaving'}
+                  >
+                    {actionState === 'leaving' ? t('find.modal.leaving') : t('find.modal.leave')}
+                  </button>
+                </div>
               ) : isFull ? (
                 <button type="button" className="btn mcard__joinfull" disabled>
                   {t('find.modal.full')}
@@ -142,6 +202,7 @@ export default function MatchModal({ matchId, onClose, onJoin, joined = false })
                 </button>
               )}
               {joinState === 'error' && <p className="modal__joinerror">{joinError}</p>}
+              {actionState === 'error' && <p className="modal__joinerror">{actionError}</p>}
             </div>
           </div>
         )}

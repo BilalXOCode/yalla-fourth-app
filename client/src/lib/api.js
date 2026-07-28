@@ -44,6 +44,8 @@ export const api = {
   login: (body) => request('/auth/login', { method: 'POST', body }),
   saveQuiz: (body, token) => request('/auth/quiz', { method: 'POST', body, token }),
   joinMatch: (id, token) => request(`/matches/${id}/join`, { method: 'POST', token }),
+  leaveMatch: (id, token) => request(`/matches/${id}/leave`, { method: 'POST', token }),
+  deleteMatch: (id, token) => request(`/matches/${id}/delete`, { method: 'POST', token }),
   createMatch: (body, token) => request('/matches', { method: 'POST', body, token }),
   submitSupport: (body) => request('/support', { method: 'POST', body }),
 };

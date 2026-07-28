@@ -47,6 +47,7 @@ export default function FindMatches() {
   const [modalId, setModalId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [joinedIds, setJoinedIds] = useState(() => new Set());
+  const [hostingIds, setHostingIds] = useState(() => new Set());
   const [joinError, setJoinError] = useState('');
   const [mine, setMine] = useState([]);
   const [mineState, setMineState] = useState('loading'); // loading | ready | error
@@ -100,16 +101,23 @@ export default function FindMatches() {
     return list.map((v) => v.name);
   }, [venueData, filters.area]);
 
-  // Which matches the logged-in user is already in (marks Discover cards).
+  // Which matches the logged-in user hosts or has joined (marks Discover cards).
+  // Split by role so the card can show Delete (host), Leave (joined) or Join.
   useEffect(() => {
     if (!user) {
       setJoinedIds(new Set());
+      setHostingIds(new Set());
       return;
     }
     let active = true;
     api
       .myMatches(token)
-      .then((d) => active && setJoinedIds(new Set((d.matches || []).map((x) => x.id))))
+      .then((d) => {
+        if (!active) return;
+        const list = d.matches || [];
+        setJoinedIds(new Set(list.filter((x) => x.role === 'joined').map((x) => x.id)));
+        setHostingIds(new Set(list.filter((x) => x.role === 'hosting').map((x) => x.id)));
+      })
       .catch(() => {});
     return () => {
       active = false;
@@ -152,6 +160,47 @@ export default function FindMatches() {
     joinCore(id).catch((e) => setJoinError(e.message));
   }
 
+  // Core leave: removes the user from the match (POST), then updates the UI
+  // live. The count reopens a slot and the match leaves My Matches.
+  async function leaveCore(id) {
+    const d = await api.leaveMatch(id, token);
+    setMatches((ms) => ms.map((m) => (m.id === id ? d.match : m)));
+    setJoinedIds((s) => {
+      const n = new Set(s);
+      n.delete(id);
+      return n;
+    });
+    setMine((list) => list.filter((m) => m.id !== id));
+    return d.match;
+  }
+
+  // Core delete (host only): removes the match (POST), then drops it from
+  // Discover and My Matches without a manual refresh.
+  async function deleteCore(id) {
+    await api.deleteMatch(id, token);
+    setMatches((ms) => ms.filter((m) => m.id !== id));
+    setHostingIds((s) => {
+      const n = new Set(s);
+      n.delete(id);
+      return n;
+    });
+    setMine((list) => list.filter((m) => m.id !== id));
+    return true;
+  }
+
+  // Card Leave button.
+  function cardLeave(id) {
+    setJoinError('');
+    leaveCore(id).catch((e) => setJoinError(e.message));
+  }
+
+  // Card Delete button, with a simple confirmation first.
+  function cardDelete(id) {
+    setJoinError('');
+    if (!window.confirm(t('find.confirmDelete'))) return;
+    deleteCore(id).catch((e) => setJoinError(e.message));
+  }
+
   return (
     <main className="find">
       <div className="container">
@@ -180,7 +229,9 @@ export default function FindMatches() {
             onClick={() => setTab('mine')}
           >
             {t('find.tabs.mine')}
-            {user && joinedIds.size > 0 ? <span className="tab__count">{joinedIds.size}</span> : null}
+            {user && joinedIds.size + hostingIds.size > 0 ? (
+              <span className="tab__count">{joinedIds.size + hostingIds.size}</span>
+            ) : null}
           </button>
         </div>
 
@@ -301,9 +352,12 @@ export default function FindMatches() {
                     <MatchCard
                       m={m}
                       variant="full"
-                      joined={joinedIds.has(m.id)}
+                      isHost={hostingIds.has(m.id)}
+                      isJoined={joinedIds.has(m.id)}
                       onDetails={(x) => setModalId(x.id)}
                       onJoin={(x) => cardJoin(x.id)}
+                      onLeave={(x) => cardLeave(x.id)}
+                      onDelete={(x) => cardDelete(x.id)}
                     />
                   </Reveal>
                 ))}
@@ -331,7 +385,13 @@ export default function FindMatches() {
                 <div className="find__grid">
                   {mine.map((m, idx) => (
                     <Reveal key={m.id} delay={Math.min(idx, 6) * 60}>
-                      <MatchCard m={m} variant="mine" onDetails={(x) => setModalId(x.id)} />
+                      <MatchCard
+                        m={m}
+                        variant="mine"
+                        onDetails={(x) => setModalId(x.id)}
+                        onLeave={(x) => cardLeave(x.id)}
+                        onDelete={(x) => cardDelete(x.id)}
+                      />
                     </Reveal>
                   ))}
                 </div>
@@ -344,7 +404,10 @@ export default function FindMatches() {
         <MatchModal
           matchId={modalId}
           joined={joinedIds.has(modalId)}
+          isHost={hostingIds.has(modalId)}
           onJoin={joinCore}
+          onLeave={leaveCore}
+          onDelete={deleteCore}
           onClose={() => setModalId(null)}
         />
       )}

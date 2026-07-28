@@ -210,5 +210,55 @@ router.post('/:id/join', auth, async (req, res) => {
   }
 });
 
+// POST /api/matches/:id/leave  -> a participant removes themselves from a match.
+// The host cannot leave (they delete instead). Lowers the taken-seat count so a
+// full match reopens a slot. A write, so POST.
+router.post('/:id/leave', auth, async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.status(404).json({ error: 'Match not found.' });
+
+    // The host does not leave their own match; they delete it.
+    if (String(match.host) === String(req.userId)) {
+      return res.status(403).json({ error: 'The host cannot leave. Delete the match instead.' });
+    }
+
+    // Must actually be in the match to leave it.
+    const inMatch = match.players.some((p) => String(p) === String(req.userId));
+    if (!inMatch) return res.status(409).json({ error: 'You are not in this match.' });
+
+    match.players = match.players.filter((p) => String(p) !== String(req.userId));
+    match.spotsTaken = Math.max(0, (match.spotsTaken ?? 1) - 1);
+    await match.save();
+
+    res.status(201).json({ match: new PadelMatch(match).toCard() });
+  } catch (err) {
+    if (err.name === 'CastError') return res.status(404).json({ error: 'Match not found.' });
+    console.error('POST /api/matches/:id/leave failed:', err.message);
+    res.status(500).json({ error: 'Could not leave the match. Please try again.' });
+  }
+});
+
+// POST /api/matches/:id/delete  -> the host deletes their own match. The JWT
+// user must be the match host, otherwise it is rejected. A write, so POST.
+router.post('/:id/delete', auth, async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.status(404).json({ error: 'Match not found.' });
+
+    // Only the host who created the match may delete it.
+    if (String(match.host) !== String(req.userId)) {
+      return res.status(403).json({ error: 'Only the host can delete this match.' });
+    }
+
+    await match.deleteOne();
+    res.status(200).json({ ok: true, id: String(match._id) });
+  } catch (err) {
+    if (err.name === 'CastError') return res.status(404).json({ error: 'Match not found.' });
+    console.error('POST /api/matches/:id/delete failed:', err.message);
+    res.status(500).json({ error: 'Could not delete the match. Please try again.' });
+  }
+});
+
 module.exports = router;
 

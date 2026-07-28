@@ -263,3 +263,43 @@
   width: 100%;
   margin-top: 16px;
 }
+
+/* Footer row for the "My matches" card: view details + leave/delete side by side */
+.mcard__minefoot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.mcard__minefoot .btn {
+  width: 100%;
+}
+.mcard__minefoot .mcard__viewbtn {
+  margin-top: 0;
+}
+
+/* Leave match: a calm ghost button that warms on hover */
+.mcard__leave {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+.mcard__leave:hover {
+  transform: translateY(-2px);
+  border-color: var(--warn);
+  color: var(--warn);
+  box-shadow: none;
+}
+
+/* Delete match (host only): a clear but not shouty danger button */
+.mcard__delete {
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 45%, transparent);
+}
+.mcard__delete:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--error) 20%, transparent);
+  border-color: var(--error);
+  box-shadow: none;
+}
