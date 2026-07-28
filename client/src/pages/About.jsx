@@ -13,7 +13,7 @@ import './About.css';
 const MEMBERS = [
   { id: '1088022', photo: '/bilal.jpeg', lead: true },
   { id: '1075413', photo: '/mahmoud.jpeg' },
-  { id: '1086910' },
+  { id: '1086910', photo: '/saeed.png' },
   { id: '1086912', photo: '/Rashed.jpeg' },
   { id: '1088314' },
 ];
