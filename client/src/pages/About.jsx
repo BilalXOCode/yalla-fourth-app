@@ -15,7 +15,7 @@ const MEMBERS = [
   { id: '1075413', photo: '/mahmoud.jpeg' },
   { id: '1086910', photo: '/saeed.png' },
   { id: '1086912', photo: '/Rashed.jpeg' },
-  { id: '1088314' },
+  { id: '1088314', photo: '/Zayed.png' },
 ];
 
 // Clean silhouette used when a member has no photo yet.
